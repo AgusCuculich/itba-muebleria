@@ -63,92 +63,51 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// PUT /:id - Modificar un producto existente por su ID
-router.put('/:id', async (req, res, next) => {
+// PUT /:slug - Actualizar un producto por slug o _id
+router.put('/:slug', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
+    const esObjectId = mongoose.Types.ObjectId.isValid(slug);
+    const query = esObjectId ? { _id: slug } : { slug: slug };
 
-    // Validar si el ID recibido tiene formato válido para MongoDB
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'ID no válido'
-      });
-    }
-
-    // Buscar y actualizar en MongoDB Atlas (devuelve el documento actualizado y ejecuta validaciones de esquema)
-    const productoActualizado = await ProductModel.findByIdAndUpdate(
-      id,
+    const productoActualizado = await ProductModel.findOneAndUpdate(
+      query,
       req.body,
       { new: true, runValidators: true }
     );
 
-    // Contemplar caso en que el producto no exista en la base de datos
     if (!productoActualizado) {
-      return res.status(404).json({
-        success: false,
-        message: 'Producto no encontrado'
-      });
+      return res.status(404).json({ success: false, message: 'Producto no encontrado' });
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Producto actualizado con éxito',
-      data: productoActualizado
-    });
-
+    res.status(200).json({ success: true, data: productoActualizado });
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: error.message
-      });
+      return res.status(400).json({ success: false, message: error.message });
     }
     if (error.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: 'Ya existe un producto con ese valor único (slug o nombre)'
-      });
+      return res.status(400).json({ success: false, message: 'Ya existe un producto con ese valor único' });
     }
-    console.error('Error al actualizar producto:', error.message);
     next(error);
   }
 });
 
-// DELETE /:id - Eliminar un producto existente por su ID
-router.delete('/:id', async (req, res, next) => {
+// DELETE /:slug - Eliminar un producto por slug o _id
+router.delete('/:slug', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
+    const esObjectId = mongoose.Types.ObjectId.isValid(slug);
+    const query = esObjectId ? { _id: slug } : { slug: slug };
 
-    // Validar si el ID recibido tiene formato válido para MongoDB
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'ID no válido'
-      });
-    }
+    const productoEliminado = await ProductModel.findOneAndDelete(query);
 
-    // Buscar y eliminar de MongoDB Atlas
-    const productoEliminado = await ProductModel.findByIdAndDelete(id);
-
-    // Contemplar caso en que el producto no exista en la base de datos
     if (!productoEliminado) {
-      return res.status(404).json({
-        success: false,
-        message: 'Producto no encontrado'
-      });
+      return res.status(404).json({ success: false, message: 'Producto no encontrado' });
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Producto eliminado con éxito',
-      data: productoEliminado
-    });
-
+    res.status(200).json({ success: true, data: productoEliminado });
   } catch (error) {
-    console.error('Error al eliminar producto:', error.message);
     next(error);
   }
 });
-
 export default router;
