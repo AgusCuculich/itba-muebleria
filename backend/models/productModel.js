@@ -9,9 +9,14 @@ const productSchema = new mongoose.Schema({
     descripcion: String,
     precio: {
         type: Number,
-        required: true
+        required: true,
+        min: 0
     },
-    stock: Number,
+    stock: {
+        type: Number,
+        required: true,
+        min: 0
+    },
     imagen: String,
     slug: {
         type: String,

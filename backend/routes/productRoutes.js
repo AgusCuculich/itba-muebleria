@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { ProductModel } from '../models/productModel.js';
 
 const router = express.Router();
@@ -22,9 +23,15 @@ router.get('/', async (req, res, next) => {
 // GET /:slug - Producto por slug
 router.get('/:slug', async (req, res, next) => {
   try {
-    const { slug } = req.params;
+const { slug } = req.params;
 
-    const product = await ProductModel.findOne({ slug });
+    // Evaluamos si el string tiene el formato de un ObjectId de Mongo
+    const esObjectId = mongoose.Types.ObjectId.isValid(slug);
+    
+    // Armamos la consulta dinámicamente según el resultado anterior
+    const query = esObjectId ? { _id: slug } : { slug: slug };
+
+    const product = await ProductModel.findOne(query);
 
     if (!product) {
       return res.status(404).json({
