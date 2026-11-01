@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/productos';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/productos';
 
 export const fetchProducts = async ({ signal } = {}) => {
     const response = await fetch(API_URL, { signal });
@@ -38,4 +38,4 @@ export const createProduct = async (producto) => {
 
     return await response.json();
 };
-
+
