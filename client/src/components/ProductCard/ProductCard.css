@@ -53,6 +53,21 @@
   color: var(--color-siena);
 }
 
-.info-producto > :last-child {
+.info-producto> :last-child {
   margin-top: auto;
+}
+
+/* Precio sobre imagen */
+.precio-producto {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background-color: var(--color-alabastro);
+  color: var(--color-carbon);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-top-left-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 2;
 }

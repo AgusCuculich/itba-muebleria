@@ -66,6 +66,7 @@ export const PanelCarrito = ({ abierto, onCerrar, carrito, onModificarCantidad, 
                         type="button"
                         className="btn-cantidad"
                         onClick={() => onModificarCantidad(item.id, 1)}
+                        disabled={item.stock !== undefined && item.cantidad >= item.stock}
                         aria-label="Sumar una unidad"
                       >
                         +

@@ -28,29 +28,48 @@ export const Layout = () => {
         localStorage.setItem('carrito', JSON.stringify(carrito))
     }, [carrito])
 
-    // Suma `cantidad` unidades si el producto ya está; si no, lo agrega
+    // Suma `cantidad` unidades si el producto ya está; si no, lo agrega respetando stock
     const agregarAlCarrito = (producto, cantidad = 1) => {
         setCarrito((prev) => {
-            const existe = prev.some((item) => item.id === producto.id)
-            return existe
-                ? prev.map((item) =>
-                      item.id === producto.id
-                          ? { ...item, cantidad: Math.min(MAX_CANTIDAD, item.cantidad + cantidad) }
-                          : item
-                  )
-                : [...prev, { ...producto, cantidad: Math.min(MAX_CANTIDAD, cantidad) }]
+            const existente = prev.find((item) => item.id === producto.id)
+            const stockMaximo = producto.stock ?? existente?.stock ?? MAX_CANTIDAD
+            if (stockMaximo <= 0) return prev
+
+            if (existente) {
+                return prev.map((item) =>
+                    item.id === producto.id
+                        ? {
+                              ...item,
+                              stock: stockMaximo,
+                              cantidad: Math.min(stockMaximo, item.cantidad + cantidad),
+                          }
+                        : item
+                )
+            }
+
+            return [
+                ...prev,
+                {
+                    ...producto,
+                    stock: stockMaximo,
+                    cantidad: Math.min(stockMaximo, cantidad),
+                },
+            ]
         })
     }
 
-    // Suma o resta unidades; si queda en 0 o menos, se elimina
+    // Suma o resta unidades respetando stock; si queda en 0 o menos, se elimina
     const modificarCantidad = (id, cambio) => {
         setCarrito((prev) =>
             prev
-                .map((item) =>
-                    item.id === id
-                        ? { ...item, cantidad: Math.min(MAX_CANTIDAD, item.cantidad + cambio) }
-                        : item
-                )
+                .map((item) => {
+                    if (item.id !== id) return item
+                    const stockMaximo = item.stock ?? MAX_CANTIDAD
+                    return {
+                        ...item,
+                        cantidad: Math.min(stockMaximo, item.cantidad + cambio),
+                    }
+                })
                 .filter((item) => item.cantidad > 0)
         )
     }
@@ -72,7 +91,7 @@ export const Layout = () => {
                 onModificarCantidad={modificarCantidad}
                 onEliminar={eliminarDelCarrito}
             />
-            <Outlet context={{ agregarAlCarrito }} />
+            <Outlet context={{ agregarAlCarrito, carrito }} />
             <Footer />
         </>
     )

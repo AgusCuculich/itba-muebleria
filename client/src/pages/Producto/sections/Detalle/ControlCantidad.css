@@ -43,3 +43,13 @@
 .input-cantidad:focus {
   outline: none;
 }
+
+.control-cantidad--deshabilitado {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cantidad:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

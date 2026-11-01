@@ -1,8 +1,9 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const logger = require('./middleware/logger');
-const productRoutes = require('./routes/productRoutes');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import logger from './middleware/logger.js';
+import productRoutes from './routes/productRoutes.js';
+import { connectToMongoDB, disconnectFromMongoDB } from './config/db.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 // 1. Archivos estáticos (imágenes de los productos)
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(import.meta.dirname, 'public')));
 
 // 2. Parser JSON
 app.use(express.json());
@@ -39,6 +40,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+// Iniciar conexión y luego servidor
+async function startServer() {
+  await connectToMongoDB();
+
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+}
+
+startServer();
+
+// Cierre graceful al presionar Ctrl+C o apagar proceso
+process.on('SIGINT', async () => {
+  await disconnectFromMongoDB();
+  process.exit(0);
+});
+process.on('SIGTERM', async () => {
+  await disconnectFromMongoDB();
+  process.exit(0);
 });

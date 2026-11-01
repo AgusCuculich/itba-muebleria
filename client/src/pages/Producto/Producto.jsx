@@ -11,7 +11,7 @@ export const Producto = () => {
     const { id } = useParams();
     const desdeInicio = useLocation().state?.desde === '/';
     // Función que viene del Layout (dueño del estado del carrito)
-    const { agregarAlCarrito } = useOutletContext();
+    const { agregarAlCarrito, carrito = [] } = useOutletContext();
 
     const [producto, setProducto] = useState(null);
     const [cargando, setCargando] = useState(true);
@@ -74,6 +74,7 @@ export const Producto = () => {
                 cantidad={cantidad}
                 setCantidad={setCantidad}
                 agregarAlCarrito={agregarAlCarrito}
+                carrito={carrito}
             />
             <Acordeones />
         </main>

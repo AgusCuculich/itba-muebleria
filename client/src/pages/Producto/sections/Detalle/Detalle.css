@@ -82,6 +82,20 @@
   margin-top: 0.25rem;
 }
 
+.stock-texto {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.stock-ok {
+  color: #2e6930;
+}
+
+.stock-agotado {
+  color: #a83232;
+}
+
 /* Botón CTA principal en la ficha de producto */
 .btn-compra-detalle {
   width: 100%;

@@ -109,21 +109,83 @@
   margin: 0 auto;
 }
 
-/* Etiqueta Sustentable */
-.etiqueta-sustentable {
+/* Etiquetas sobre la imagen */
+.etiquetas-imagen {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--spacing-chico);
   z-index: 2;
+}
+
+/* Etiqueta Sustentable */
+.etiqueta-sustentable {
   background-color: var(--color-salvia);
   color: var(--color-alabastro);
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 700;
+}
+
+/* Etiqueta últimas unidades — shimmer border */
+.etiqueta-stock-bajo {
+  isolation: isolate;
+  background-color: var(--color-alabastro);
+  color: var(--color-vara-de-oro);
+  text-transform: uppercase;
+}
+
+.etiqueta-stock-bajo,
+.etiqueta-sustentable {
+  position: relative;
+  font-size: var(--text-small);
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* Shimmer sweep pseudo-element */
+.etiqueta-stock-bajo::before {
+  content: "";
+  position: absolute;
+  inset: 0px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle, 0deg),
+      transparent 60%,
+      var(--color-vara-de-oro) 75%,
+      transparent 90%);
+  z-index: -1;
+  pointer-events: none;
+  animation: shimmer-sweep 2s linear infinite;
+}
+
+/* Inner fill so the label background shows through */
+.etiqueta-stock-bajo::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background-color: var(--color-alabastro);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes shimmer-sweep {
+  from {
+    --angle: 0deg;
+  }
+
+  to {
+    --angle: 360deg;
+  }
 }
 
 /* Mensajes Estado */

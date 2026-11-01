@@ -21,3 +21,21 @@ export const fetchProductById = async (id, { signal } = {}) => {
     const json = await response.json();
     return json.data;
 };
+
+export const createProduct = async (producto) => {
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(producto),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error ${response.status} al crear producto`);
+    }
+
+    return await response.json();
+};
+
