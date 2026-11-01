@@ -1,4 +1,4 @@
-const IMAGE_URL = "http://localhost:3000/images/";
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL || 'http://localhost:3000/images/';
 
 export const FOUNDING_YEAR = 1960
 

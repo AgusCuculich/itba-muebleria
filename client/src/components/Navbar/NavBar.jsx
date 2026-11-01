@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router'
 import './NavBar.css'
 
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL || 'http://localhost:3000/images/'
+
 // Links de navegación definidos como datos: agregar una página nueva
 // es sumar una línea acá, en vez de copiar un bloque <li> entero.
 const LINKS = [
@@ -19,7 +21,7 @@ export const NavBar = ({ contador, onAbrirCarrito }) => {
     <header className="header-principal">
       <div className="header-contenido">
         <Link to="/" className="logo-link" onClick={cerrarMenu}>
-          <img className="img-logo" src="http://localhost:3000/images/logo.svg" alt="Hermanos Jota" />
+          <img className="img-logo" src={`${IMAGE_URL}logo.svg`} alt="Hermanos Jota" />
         </Link>
 
         {/* Navegación (en desktop horizontal, en mobile desplegable) */}

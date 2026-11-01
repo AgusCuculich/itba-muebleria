@@ -3,7 +3,7 @@ import { Boton } from '../../../../components/Boton/Boton.jsx';
 import { ControlCantidad } from './ControlCantidad.jsx';
 import './Detalle.css';
 
-const IMAGE_URL = 'http://localhost:3000/images/';
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL || 'http://localhost:3000/images/';
 
 export const Detalle = ({
     producto,

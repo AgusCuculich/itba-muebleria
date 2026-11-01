@@ -17,7 +17,7 @@ const IMAGENES_DISPONIBLES = [
   { label: 'Mesa de Noche Aconcagua', value: 'mesa-de-noche-aconcagua.png' },
 ];
 
-const IMAGE_BASE_URL = 'http://localhost:3000/images/';
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_URL || 'http://localhost:3000/images/';
 
 export const ProductForm = () => {
   const navigate = useNavigate();

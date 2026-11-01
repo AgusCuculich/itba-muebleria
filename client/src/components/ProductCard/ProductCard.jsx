@@ -1,6 +1,7 @@
 import { Boton } from '../Boton/Boton';
-import './ProductCard.css'
-const IMAGE_URL = "http://localhost:3000/images/";
+import './ProductCard.css';
+
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL || 'http://localhost:3000/images/';
 
 export const ProductCard = ({ producto }) => {
     const urlImagen = `${IMAGE_URL}${producto.imagen}`;

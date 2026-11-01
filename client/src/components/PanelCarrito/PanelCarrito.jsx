@@ -1,6 +1,6 @@
 import './PanelCarrito.css'
 
-const IMAGE_URL = "http://localhost:3000/images/";
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL || 'http://localhost:3000/images/';
 
 // Formato de moneda consistente con la vista de detalle
 const formatearPrecio = (valor) => `$ ${(valor || 0).toLocaleString('es-AR')}`
