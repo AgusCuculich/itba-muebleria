@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export const Contacto = () => {
+  const navigate = useNavigate();
   // Estado para el formulario controlado
   const [formData, setFormData] = useState({
     nombre: '',
@@ -69,6 +71,10 @@ export const Contacto = () => {
       
       // Limpiamos el formulario
       setFormData({ nombre: '', email: '', mensaje: '' });
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+
     } catch (error) {
       setEstadoEnvio({
         tipo: 'error',
