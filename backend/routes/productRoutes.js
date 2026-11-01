@@ -50,6 +50,7 @@ const { slug } = req.params;
   }
 });
 
+// POST / - Crear un nuevo producto
 router.post('/', async (req, res, next) => {
   try {
     const nuevoProducto = new ProductModel(req.body);
@@ -68,4 +69,51 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+// PUT /:slug - Actualizar un producto por slug o _id
+router.put('/:slug', async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const esObjectId = mongoose.Types.ObjectId.isValid(slug);
+    const query = esObjectId ? { _id: slug } : { slug: slug };
+
+    const productoActualizado = await ProductModel.findOneAndUpdate(
+      query,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!productoActualizado) {
+      return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+    }
+
+    res.status(200).json({ success: true, data: productoActualizado });
+  } catch (error) {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: 'Ya existe un producto con ese valor único' });
+    }
+    next(error);
+  }
+});
+
+// DELETE /:slug - Eliminar un producto por slug o _id
+router.delete('/:slug', async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const esObjectId = mongoose.Types.ObjectId.isValid(slug);
+    const query = esObjectId ? { _id: slug } : { slug: slug };
+
+    const productoEliminado = await ProductModel.findOneAndDelete(query);
+
+    if (!productoEliminado) {
+      return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+    }
+
+    res.status(200).json({ success: true, data: productoEliminado });
+  } catch (error) {
+    next(error);
+  }
+});
 export default router;
