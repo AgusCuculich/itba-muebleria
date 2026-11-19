@@ -70,5 +70,18 @@ Mantener actualizado el archivo `docs/api-contract.md`. Ahí se debe llevar un r
 4. La estructura de respuesta de éxito (ej. `{ success: true, data: ... }`).
 Cada vez que se agregue o modifique un endpoint en `/backend`, actualizar `docs/api-contract.md` en el mismo cambio, no después.
 
-## Notas para el agente
-- No hay base de datos ni autenticación en esta etapa: todo vive en memoria (`productos.js`).
+## Datos y Base de Datos
+- **MongoDB + Mongoose:** Los datos persisten en una base de datos MongoDB (MongoDB Atlas en producción). 
+- **Modelos:**
+  - `Producto`: Gestiona el catálogo (solo lectura por ahora).
+  - `Usuario`: Almacena `nombre`, `email` y `password`. La contraseña **debe** guardarse hasheada usando `bcrypt`.
+  - `Pedido`: Almacena la referencia al `Usuario` (ObjectId), los items comprados y el total.
+
+## Autenticación y Seguridad
+- **JWT (JSON Web Tokens):** El inicio de sesión genera un token firmado que el cliente debe enviar en el header `Authorization: Bearer <token>` para rutas protegidas.
+- **Middleware de Autorización:** Se requiere un middleware (`middleware/auth.js`) que verifique la validez del token JWT y adjunte el payload del usuario al objeto `req` (`req.usuario`).
+
+## Nuevos Recursos (Rutas)
+- `/api/auth/registro` (POST) → Crea un nuevo usuario hasheando la contraseña.
+- `/api/auth/login` (POST) → Verifica credenciales y devuelve un JWT.
+- `/api/pedidos` (POST) → Ruta protegida (requiere JWT). Recibe un carrito y crea un pedido asociado al usuario logueado.
